@@ -59,23 +59,23 @@ def get_table_download_link(messages):
 def summarizeBart(text):
     print('hello')
     try:
+        start_time = time.time()
         response = requests.get(RDS_ENDPOINT, timeout=2)
-        addBotPrompt("Sure! Summarizing...\nThis might take awhile...")
-        response = requests.post(
-            RDS_ENDPOINT_SUMMARIZE,
-            json={"text": text})
+        addBotPrompt("Sure! Summarizing...")
+
+        with st.spinner('This might take awhile...'):
+            response = requests.post(
+                RDS_ENDPOINT_SUMMARIZE,
+                json={"text": text})
         
+        elapsed_time = round(time.time() - start_time, 2)
+        addBotPrompt(f"Done! Generated in {elapsed_time} seconds")
+
         addBotPrompt(response.json()['message'])
         return True
     except requests.exceptions.ConnectionError:
         print("Connection refused")
         return False
-
-if uploaded is not None:
-    # TODO: update this
-    text = uploaded.read().decode("utf-8")
-    if selected_model == "bart-large":
-        summarizeBart(text)
 
 # download chat history
 if st.sidebar.button("Download chat history"):
@@ -108,6 +108,14 @@ def addBotPrompt(response, help=False):
         else:
             st.session_state.messages.append({"role": "ai", "content": response})
         message_placeholder.markdown(full_response)
+
+
+if uploaded is not None:
+    text = uploaded.read().decode("utf-8")
+    if selected_model == "bart-large":
+        if summarizeBart(text) == False:
+            addBotPrompt("Sorry, I'm not available right now. Please try again later.")
+
 
 st.subheader("💬 Summarize")
 st.write("Ask me to summarize anything!")
