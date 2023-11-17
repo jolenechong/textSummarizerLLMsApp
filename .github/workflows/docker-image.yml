@@ -21,6 +21,6 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag jolenechong/llms_summarizer:${{ github.sha }}
+      run: docker build . --file Dockerfile --tag jolenechong/llms_summarizer:latest
     - name: Push Docker image
       run: docker push jolenechong/llms_summarizer:latest
