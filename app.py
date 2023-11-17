@@ -123,7 +123,7 @@ def summarize():
     else:
       with torch.no_grad():
           outputs = model.generate(input_ids=inputs["input_ids"])
-          summarized = tokenizer.batch_decode(outputs.detach().cpu().numpy())[0]
+          summarized = tokenizer.batch_decode(outputs.detach().cpu().numpy())[0].replace("<s>", "").replace("</s>", "")
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -140,7 +140,7 @@ def summarize():
     object = s3.Object(bucket_name, file_name)
     object.put(Body=text)
 
-    summarized_item = SummarizedText(text=name, summarized=summarized.replace("<s>", "").replace("</s>", ""), elapsed_time=elapsed_time)
+    summarized_item = SummarizedText(text=name, summarized=summarized, elapsed_time=elapsed_time)
     db.session.add(summarized_item)
     db.session.commit()
     # socketio.emit('summarization_progress', {'message': "Saved to DB"})
