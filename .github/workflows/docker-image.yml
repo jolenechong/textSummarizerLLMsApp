@@ -23,4 +23,4 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag jolenechong/llms_summarizer:${{ github.sha }}
     - name: Push Docker image
-      run: docker push jolenechong/llms_summarizer:${{ github.sha }}
+      run: docker push jolenechong/llms_summarizer:latest

@@ -6,11 +6,14 @@ import torch
 import time
 
 import transformers
-from langchain import LLMChain, HuggingFacePipeline, PromptTemplate
+from langchain import HuggingFacePipeline, PromptTemplate
 from langchain.chains.summarize import load_summarize_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 from gevent.pywsgi import WSGIServer
+
+import boto3
+from datetime import datetime
 
 # from flask_socketio import SocketIO
 # from threading import Lock
@@ -61,6 +64,11 @@ app = Flask(__name__)
 # thread_lock = Lock()
 # socketio = SocketIO(app, cors_allowed_origins='*')
 
+def generateFileName():
+    # generate using time
+    time = str(datetime.timestamp(datetime.now())).split('.')[0]
+    return f"{time}.txt"
+
 # environmental var
 db_url = os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config['SQLALCHEMY_DATABASE_URI']=db_url
@@ -74,8 +82,8 @@ class SummarizedText(db.Model):
     __tablename__='text'
 
     id=db.Column(db.Integer,primary_key=True)
-    text=db.Column(db.String(10000))
-    summarized=db.Column(db.String(10000))
+    text=db.Column(db.String(255)) # saves link to original text in s3 (long text, better to store in s3)
+    summarized=db.Column(db.String(1000)) # saves summaries
     elapsed_time=db.Column(db.Float)
     
     def __init__(self, text, summarized, elapsed_time):
@@ -116,17 +124,20 @@ def summarize():
     # socketio.emit('summarization_progress', {'message': "Summarized"})
     print("Summarized")
 
-    summarized_item = SummarizedText(text=text, summarized=summarized, elapsed_time=elapsed_time)
+    # save text to s3
+    s3 = boto3.resource('s3')
+    bucket_name = "llm-text-summarizer"
+    file_name = generateFileName()
+    name = f"s3://{bucket_name}/{file_name}"
+
+    object = s3.Object(bucket_name, file_name)
+    object.put(Body=text)
+
+    summarized_item = SummarizedText(text=name, summarized=summarized.replace("<s>", "").replace("</s>", ""), elapsed_time=elapsed_time)
     db.session.add(summarized_item)
     db.session.commit()
     # socketio.emit('summarization_progress', {'message': "Saved to DB"})
     print("Saved to DB")
-    
-    # inputs = tokenizer(text, return_tensors="pt")
-    # model.eval()
-    # with torch.no_grad():
-    #     outputs = model.generate(input_ids=inputs["input_ids"])
-    #     summarized = tokenizer.batch_decode(outputs.detach().cpu().numpy())[0].replace("<s>", "").replace("</s>", "")
 
     return jsonify({'message': summarized})
 

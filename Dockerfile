@@ -9,7 +9,7 @@ COPY requirements.txt requirements.txt
 
 # save space with torch downloads since we're not using GPU for inference
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu && \
-    pip3 install peft flask Flask-SQLAlchemy transformers gevent psycopg2-binary python-dotenv langchain && \
+    pip3 install peft flask Flask-SQLAlchemy transformers gevent psycopg2-binary python-dotenv langchain tiktoken && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
 
