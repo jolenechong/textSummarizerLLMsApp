@@ -5,6 +5,7 @@ import random
 import os
 from dotenv import load_dotenv
 import pandas as pd
+import sqlalchemy as sa
 import base64
 load_dotenv()
 
@@ -46,9 +47,6 @@ if selected_model == "gpt-3.5":
     api_key = st.sidebar.text_input("Enter OpenAI API key", type="password")
 elif selected_model == "palm-2":
     api_key = st.sidebar.text_input("Enter GCP API key", type="password")
-
-st.sidebar.write("Summarize a file")
-uploaded = st.sidebar.file_uploader("", type=["txt"], label_visibility="collapsed")
 
 def get_table_download_link(messages):
     df = pd.DataFrame(messages)
@@ -110,15 +108,20 @@ def addBotPrompt(response, help=False):
         message_placeholder.markdown(full_response)
 
 
-if uploaded is not None:
-    text = uploaded.read().decode("utf-8")
-    if selected_model == "bart-large":
-        if summarizeBart(text) == False:
-            addBotPrompt("Sorry, I'm not available right now. Please try again later.")
-
-
 st.subheader("💬 Summarize")
 st.write("Ask me to summarize anything!")
+
+# View Current DB button
+with st.expander("View Current DB"):
+    view_current_db = st.button("Get Current DB")
+    if view_current_db:
+        database_uri = os.getenv("SQLALCHEMY_DATABASE_URI")
+        engine = sa.create_engine(database_uri)
+
+        query = sa.text("SELECT * FROM text")
+        result = engine.connect().execute(query)
+        df = pd.DataFrame(result.fetchall())
+        st.dataframe(df)
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -135,6 +138,12 @@ for message in st.session_state.messages:
             st.info(info)
         else:
             st.markdown(message["content"])
+
+st.sidebar.write("Summarize a file")
+uploaded = st.sidebar.file_uploader("", type=["txt"], label_visibility="collapsed")
+if uploaded is not None:
+    st.sidebar.write("Say hi to get summary!")
+    # prompt = "File Uploaded"
 
 # React to user input
 if prompt := st.chat_input("Send a message..."):
@@ -166,3 +175,9 @@ if prompt := st.chat_input("Send a message..."):
         addUserPrompt(prompt)
         assistant_response = "Sorry, I don't understand. Could you rephrase?"
         addBotPrompt(assistant_response)
+
+    if uploaded is not None:
+        text = uploaded.read().decode("utf-8")
+        if selected_model == "bart-large":
+            if summarizeBart(text) == False:
+                addBotPrompt("Sorry, I'm not available right now. Please try again later.")
