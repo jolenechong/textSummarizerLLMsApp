@@ -109,14 +109,21 @@ def summarize():
     # handle long text
     max_tokens = 1024
     start_time = time.time()
+    inputs = tokenizer(text, return_tensors="pt")
+    num_tokens = len(inputs["input_ids"])
 
-    summary_chain = summ_pipeline(model, tokenizer, "map_reduce", max_tokens)
-    text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(chunk_size=max_tokens-100, chunk_overlap=100)
+    if num_tokens > max_tokens:
+      summary_chain = summ_pipeline(model, tokenizer, "map_reduce", max_tokens)
+      text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(chunk_size=max_tokens-100, chunk_overlap=100)
 
-    # if tokens are within max_tokens range don't split it
-    # else split it
-    docs = text_splitter.create_documents([text])
-    summarized = summary_chain.run(docs)
+      # if tokens are within max_tokens range don't split it
+      # else split it
+      docs = text_splitter.create_documents([text])
+      summarized = summary_chain.run(docs)
+    else:
+      with torch.no_grad():
+          outputs = model.generate(input_ids=inputs["input_ids"])
+          summarized = tokenizer.batch_decode(outputs.detach().cpu().numpy())[0]
 
     end_time = time.time()
     elapsed_time = end_time - start_time
