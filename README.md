@@ -4,7 +4,7 @@ This repository encapsulates a demo of the final application and fine-tuned mode
 
 Date: October-November 2023<br/>
 Live site: https://llm-text-summarizer.streamlit.app/ (backend is terminated at this time)<br/>
-Paper: [https://github.com/jolenechong/textSummarizerLLMsApp/blob/main/Unleashing the Power of Large Language Models on Transcripts Summarization.docx](https://github.com/jolenechong/textSummarizerLLMsApp/blob/main/Unleashing%20the%20Power%20of%20Large%20Language%20Models%20on%20Transcripts%20Summarization.docx)<br/>
+Paper: [https://github.com/jolenechong/textSummarizerLLMsApp/blob/main/Unleashing the Power of Large Language Models on Transcripts Summarization.pdf](https://github.com/jolenechong/textSummarizerLLMsApp/blob/main/Unleashing%20the%20Power%20of%20Large%20Language%20Models%20on%20Transcripts%20Summarization.pdf)<br/>
 
 Here's a quick demo on the summarization features of the application and how it works.<br/>
 
