@@ -5,10 +5,10 @@ This repository encapsulates a demo of the final application and fine-tuned mode
 Date: October-November 2023<br/>
 Live site: https://llm-text-summarizer.streamlit.app/ (backend is terminated at this time)<br/>
 Fine-Tuned Open Source Models:
-- LoRA Fine-Tuned CNN/DailyMail and TIB BART Large model: https://huggingface.co/jolenechong/lora-bart-cnn-tib-1024<br/>
-- LoRA Fine-Tuned SAMSUM TIB BART Large model: https://huggingface.co/jolenechong/lora-bart-samsum-tib-1024<br/>
+- [LoRA Fine-Tuned CNN/DailyMail and TIB BART Large model](https://huggingface.co/jolenechong/lora-bart-cnn-tib-1024)<br/>
+- [LoRA Fine-Tuned SAMSUM TIB BART Large model](https://huggingface.co/jolenechong/lora-bart-samsum-tib-1024)<br/>
 
-Paper: [Unleashing the Power of Large Language Models on Transcripts Summarization.pdf](https://github.com/jolenechong/textSummarizerLLMsApp/blob/main/Unleashing%20the%20Power%20of%20Large%20Language%20Models%20on%20Transcripts%20Summarization.pdf)<br/>
+Documentation: [Unleashing the Power of Large Language Models on Transcripts Summarization.pdf](https://github.com/jolenechong/textSummarizerLLMsApp/blob/main/Unleashing%20the%20Power%20of%20Large%20Language%20Models%20on%20Transcripts%20Summarization.pdf)<br/>
 Code Snippets: [https://gist.github.com/jolenechong/0781431d894332ee44b7ef05caab7cbe](https://gist.github.com/jolenechong/0781431d894332ee44b7ef05caab7cbe)
 
 Here's a quick demo on the summarization features of the application and how it works.<br/>
@@ -43,7 +43,7 @@ with torch.no_grad():
 
 ```
 
-Feel free to check out the paper and code snippets as well as the first model above for more details on the fine-tuning process and the evaluation of the models.
+Feel free to check out the process through my documentation and code snippets as well as the first model above for more details on the fine-tuning process and the evaluation of the models.
 
 To run the front-end streamlit application locally, follow these steps:
 ```bash
