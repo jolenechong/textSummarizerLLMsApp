@@ -17,6 +17,10 @@ https://github.com/jolenechong/textSummarizerLLMsApp/assets/77100254/3dbea24c-ad
 
 <br/>
 
+### Architecture
+
+![Overall Architecture](architecture.png)
+
 ### Usage
 
 Give this model a try! It's the second published model as stated above. <br/>
